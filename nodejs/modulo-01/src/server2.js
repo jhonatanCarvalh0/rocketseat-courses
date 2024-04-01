@@ -47,6 +47,15 @@
  * body da requisição => { "name": "Lucas", "email": "lucas@email.com" }
  */
 
+/**
+ * HTTP STATUS CODES
+ * 1xx: Informational; EX: 100 Continue;
+ * 2xx: Success; EX: 200 OK;
+ * 3xx: Redirection; EX: 301 Moved Permanently;
+ * 4xx: Client Error; EX: 400 Bad Request;
+ * 5xx: Server Error; EX: 500 Internal Server Error;
+ */
+
 import http from 'node:http'
 
 const users = []
@@ -56,18 +65,24 @@ const server = http.createServer((request, response) => {
     if (url === '/users' && method === 'GET') {
         // Resposta precisa ser String ou Buffer ou Uint8Array
         return response
+            // status 200 OK - Indica que a requisição foi bem sucedida
+            .writeHeader(200)
             .setHeader('Content-Type', 'application/json')
             .end(JSON.stringify(users))
     }
+
     if (url === '/users' && method === 'POST') {
         users.push({
             id: 1,
             name: 'Lucas',
             email: 'lucas@email.com'
         })
+        // status 201 Created - Indica que um novo recurso foi criado
+        return res.writeHead(201).end()
     }
 
-    return response.end('Hello World')
+    // status 404 Not Found - Indica que o recurso solicitado não foi encontrado
+    return response.writeHeader(404).end()
 })
 
 server.listen(3333, () => {
